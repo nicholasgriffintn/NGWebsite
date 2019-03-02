@@ -1,6 +1,8 @@
 <% include ./partials/head.ejs %>
 
-<% if(posts){ %>
+<% include ./partials/header.ejs %>
+
+<% if(posts && posts != ''){ %>
 <% for(let i = 0; i < posts.length; i++) { %>
   <style>
       .single-page .App-header {
@@ -13,6 +15,7 @@
         padding: 1rem;
         text-align: left;
         min-height: 150px;
+        width: calc(100% - 2rem);
     }
     img.post-image {
     width: 100%;
@@ -24,7 +27,11 @@
   <div class="App-header">
       <div id="background-parallax">
         <div class="background-colours">
-          <div class="background"></div>
+          <div class="background" style="
+          background-image: url('<%= posts[i].image %>');
+          background-size: cover;
+          background-position: top center;
+      "></div>
         </div>
       </div>
     <div class="mid-box-background">
@@ -38,13 +45,8 @@
   </div>
   <div class="App-content">
     <div class="ui container">
-    <div class="post-content-wrap ui grid">
-      <div class="post-content-sidebar sixteen wide tablet five wide computer column">
-        <img src="<%= posts[i].image %>" alt="" class="post-image">
-      </div>
-      <div class="post-content-body sixteen wide tablet ten wide computer column">
+    <div class="post-content-wrap">
         <%- posts[i].body %>
-      </div>
     </div>
   </div>
   </div>

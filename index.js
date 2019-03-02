@@ -4,7 +4,6 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('mongoose-type-html');
 const errorHandler = require('errorhandler');
-
 var express = require('express');
 var path = require('path');
 
@@ -34,11 +33,10 @@ if (!isProduction) {
 mongoose.connect('mongodb+srv://test:ojs1S5FRbzAjI51K@cluster0-tnibq.mongodb.net/test?retryWrites=true');
 mongoose.set('debug', true);
 
-var postSchema = new mongoose.Schema({ posttype: String, title: String, date: String, image: String, excerpt: String, body: mongoose.SchemaTypes.Html });
-var Post = mongoose.model('Post', postSchema);
-
 // modelss
 require('./models/Users');
+require('./models/Post');
+const Post = mongoose.model('Post');
 
 // config
 require('./config/passport');
@@ -68,15 +66,6 @@ app.get("/post-single", (req, res) => {
     Post.find({ '_id': req.query.postID }, (err, posts) => {
        res.render('post-single', { posts: posts})
     }).sort({date: 'descending'});
-});
-// For creating posts
-app.post('/addpost', (req, res) => {
-    var postData = new Post(req.body);
-    postData.save().then( result => {
-        res.status(200).send("Post saved.");
-    }).catch(err => {
-        res.status(400).send("Unable to save data");
-    });
 });
 
 // router

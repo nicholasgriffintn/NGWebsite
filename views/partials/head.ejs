@@ -518,8 +518,50 @@
             margin: 0;
             padding: 0;
             font-family: sans-serif;
-            overflow-x: none;
+            overflow-x: hidden;
         }
+
+        header {
+    background: #000;
+    padding: 0.5rem;
+    width: 100%;
+    padding: 1rem;
+}
+
+.text-normal {
+    text-align: initial;
+}
+
+header .site-title-header {
+    display: inline-block;
+    width: auto;
+    font-size: 1.5rem;
+    color: #a3a7ae;
+    font-weight: 600;
+}
+
+header .site-title-header a {
+    text-decoration: none;
+    color: #a3a7ae;
+}
+
+header .site-links-header {
+    display: inline-block;
+    float: right;
+}
+
+header .site-links-header a {
+    color: #485569;
+    text-transform: uppercase;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.25rem;
+    display: inline-block;
+}
+
+header a:hover {
+    color: #fff!important;
+}
 
         .post-content-sidebar {
             max-width: 320px;
