@@ -1,0 +1,288 @@
+<% include ./partials/head.ejs %>
+
+<div class="App-header">
+  <div id="background-parallax">
+    <div class="background-colours">
+      <div class="background"></div>
+    </div>
+    <div class="background-animation">
+      <div id="stars"></div>
+      <div id="stars2"></div>
+      <div id="stars3"></div>
+    </div>
+    <div class="mid-box-background">
+      <div class="title-wrapper">
+        <h1 id="homepage-title" class="animated bounceInDown">I'm Nicholas Griffin</h1>
+        <div class="homepage-subtitle">
+          <div id="typed-strings">
+            <p>I'm a
+              <strong>web developer</strong>.</p>
+            <p>I'm a
+              <strong>blogger</strong>.</p>
+            <p>I'm a
+              <strong>technology ethusiast</strong>.</p>
+            <p>Okay...</p>
+            <p>I'm really just a bit of a nerd.</p>
+            <p>
+              <span>I live in the
+                <strong>UK</strong>.</span>
+            </p>
+            <p>I spend most of my time doing new stuff on the web.</p>
+            <p>Mostly front end, but I do dabble in a bit of back end.</p>
+            <p>When I run out of stuff on the web, I often end up staying up late with
+              <strong>Netflix</strong>.</p>
+            <p>My dog is a bit of an
+              <span id="dogImageModal">idiot</span>
+            </p>
+            <p>But probably not as bad as some of my code...</p>
+            <p>We've all been through those days.</p>
+            <p>All that said, feel free to check out some more of my stuff.</p>
+          </div>
+          <div id="typed-strings-delay">
+            <p> </p>
+            <p>Are you still reading this?</p>
+            <p>Did you not see the icon?</p>
+            <p>Seriously... Just scroll your mouse down!</p>
+          </div>
+          <div id="second-typed-strings-delay">
+            <p> </p>
+            <p>Fine, be like that.</p>
+            <p>I'll just do it for you.</p>
+          </div>
+          <div id="third-typed-strings-delay">
+            <p>Was that so hard?</p>
+            <p>Oh wait...</p>
+            <p>You can't see this..</p>
+            <p>I could put anything here right now and you wouldn't have a clue...</p>
+            <p>Watermelons</p>
+            <p>Blueberries</p>
+            <p>Wasn't that fun?</p>
+            <p>I should probably revert this just in case you come back..</p>
+            <p>Right, let's see, what can I put here?...</p>
+            <p>I know!</p>p&gt;
+            <p>Web Developer, Blogger and Technology Enthusiast</p>
+          </div>
+          <div id="default-typed-strings">
+            <p> </p>
+            <p>Web Developer, Blogger and Technology Enthusiast</p>
+          </div>
+          <span id="typed"></span>
+        </div>
+      </div>
+      <div class="buttons-wrapper"></div>
+    </div>
+    <div class="scroll-down">
+      <div class="scroll-icon-wrapper">
+        <div class="scroller"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="App-content">
+  <div class="ui container stackable grid" id="mainOpeningContentWrap">
+    <div id="OpeningContentWrapperWrap" class="sixteen wide tablet twelve wide computer column">
+      <div id="OpeningContentWrapper">
+        <h1>👋 Welcome to my website!</h1>
+        <p>As you might have read in the title, my name is Nicholas Griffin and I am a web developer, blogger and
+          technology enthusiast from the UK.</p>
+        <p>I spend most of my time doing a range of personal web development projects around the web alongside my work
+          for Accrosoft, where I work as a developer and deliver a range of web-based projects for our customers around
+          the globe.</p>
+        <p>Before I started at Accrosoft, I worked for myself on various freelance web development projects and on my
+          own technology news & reviews site that was called TechNutty (still not a fan of the name). I also spent a few
+          years at the University of Derby, mostly drinking and playing Xbox, occasionally I studied Business Management
+          ad managed to achieve a 2:1, which is fair enough. 😂</p>
+        <p>I aim to use this website to not only showcase myself but also start working on a range of other personal
+          projects. You can follow my expeditions below.</p>
+      </div>
+    </div>
+    <div id="MusicOpeningWrapper" class="sixteen wide tablet four wide computer column">
+      <div id="spotify-widget" class="ui stackable grid"></div>
+      <span id="MusicOpeningWrapperTitle">What I'm listening to
+        <i class="angle up icon"></i>
+      </span>
+    </div>
+  </div>
+  <div id="BlogandMoreAboutWrapper" class="conntainer-fluid coloured-container">
+    <div class="ui container">
+      <div id="BlogPostOpenerWrapper">
+        <h2>What's going on?</h2>
+        <p>Below you will find some of the blog posts that I have wrote (if that is still working), I used to write a
+          lot and I'm looking to write blog posts more about the projects that I am working on. If you don't see
+          anything it is safe to say that I didn't do that....</p>
+      </div>
+    </div>
+  </div>
+  <div id="BlogandMoreAboutSeconndWrapper" class="conntainer-fluid coloured-float-container">
+    <div class="ui container">
+      <div class="ui three stackable cards" id="BlogContentContainer">
+        <% if(posts){ %>
+          <% for(let i = 0; i < posts.length; i++) { %>
+            <div class="ui card">
+              <div class="image">
+                <img src="<%= posts[i].image %>">
+              </div>
+              <div class="content">
+                <a class="header"><%= posts[i].title %></a>
+                <div class="meta">
+                  <span class="date"><%= posts[i].date %></span>
+                </div>
+                <div class="description">
+                  <%= posts[i].excerpt %>
+                </div>
+              </div>
+              <div class="extra content">
+                <a class="ui button primary basic inverted" href="/post-single?postID=<%= posts[i]._id %>">
+                  Read more
+                </a>
+              </div>
+            </div>
+          <% } %>
+        <% } %>
+      </div>
+      <button id="blogLoadMoreButton" style="display:none" class="ui button fluid" data-start="0" data-limit="3">
+        Load More
+      </button>
+    </div>
+  </div>
+  <div id="ExtraContentWrapper" class="ui container">
+    <div id="ExtraContentContainer">
+      <h2>So what is it that you do?</h2>
+      <small>I'm not sure that I actually know...</small>
+    </div>
+    <div id="SkillsContentContainer">
+      <h3>Languages that I often write in</h3>
+      <div class="ui grid">
+        <div class="doubling eight column row">
+          <div class="column icon-grid-item">
+            <img alt="CSS3" src="/uploads/langaugesIcons/css3.svg">
+            <span>CSS3</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="GraphQL" src="/uploads/langaugesIcons/graphql.svg">
+            <span>GraphQL</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="HTML5" src="/uploads/langaugesIcons/html5.svg">
+            <span>HTML5</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="JavaScript" src="/uploads/langaugesIcons/javascript.svg">
+            <span>JavaScript</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="SASS" src="/uploads/langaugesIcons/sass.svg">
+            <span>SASS</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="JSON" src="/uploads/langaugesIcons/json.svg">
+            <span>JSON</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="PHP" src="/uploads/langaugesIcons/php.svg">
+            <span>PHP</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="React" src="/uploads/langaugesIcons/react.svg">
+            <span>React</span>
+          </div>
+        </div>
+      </div>
+      <h3>Tools that I often use</h3>
+      <div class="ui grid">
+        <div class="doubling eight column row">
+          <div class="column icon-grid-item">
+            <img alt="Bootstrap" src="/uploads/langaugesIcons/bootstrap.svg">
+            <span>Bootstrap</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="CloudFlare" src="/uploads/langaugesIcons/cloudflare.svg">
+            <span>CloudFlare</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="NPM" src="/uploads/langaugesIcons/npm.svg">
+            <span>NPM</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Firebase" src="/uploads/langaugesIcons/firebase.svg">
+            <span>Firebase</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Gatsby" src="/uploads/langaugesIcons/gatsby.svg">
+            <span>Gatsby</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Git" src="/uploads/langaugesIcons/git.svg">
+            <span>Git</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Google Analytics" src="/uploads/langaugesIcons/googleanalytics.svg">
+            <span>Google Analytics</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="NGinx" src="/uploads/langaugesIcons/nginx.svg">
+            <span>NGINX</span>
+          </div>
+        </div>
+        <div class="doubling eight column row">
+          <div class="column icon-grid-item">
+            <img alt="NodeJS" src="/uploads/langaugesIcons/nodejs.svg">
+            <span>NodeJS</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Docker" src="/uploads/langaugesIcons/docker.svg">
+            <span>Docker</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="AWS" src="/uploads/langaugesIcons/aws.svg">
+            <span>AWS</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Sentry" src="/uploads/langaugesIcons/sentry.svg">
+            <span>Sentry</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Yarn" src="/uploads/langaugesIcons/yarn.svg">
+            <span>Yarn</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Visual Studio Code" src="/uploads/langaugesIcons/visualstudiocode.svg">
+            <span>Visual Studio / Code</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="Webpack" src="/uploads/langaugesIcons/webpack.svg">
+            <span>Webpack</span>
+          </div>
+          <div class="column icon-grid-item">
+            <img alt="WordPress" src="/uploads/langaugesIcons/wordpress.svg">
+            <span>WordPress</span>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <small>And last but not least...</small>
+      <br>
+      <br>
+      <div class="ui grid">
+        <div class="doubling one column row">
+          <div class="column icon-grid-item">
+            <img alt="Stack Overflow" src="/uploads/langaugesIcons/stackoverflow.svg">
+            <span>Stack Overflow (it's always good to be honest xD)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer id="App-footer">
+    <div class="ui container">
+      <div class="footerBlockFloat">
+      </div>
+      <div class="footerBlock">
+
+      </div>
+    </div>
+  </footer>
+</div>
+
+<% include ./partials/hp_footer.ejs %>

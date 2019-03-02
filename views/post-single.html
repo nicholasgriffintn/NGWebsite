@@ -1,0 +1,70 @@
+<% include ./partials/head.ejs %>
+
+<% if(posts){ %>
+<% for(let i = 0; i < posts.length; i++) { %>
+  <style>
+      .single-page .App-header {
+        height: auto !important;
+        padding-top: 0 !important;
+        position: relative;
+    }
+      .single-page .App-content {
+        top: 0 !important;
+        padding: 1rem;
+        text-align: left;
+        min-height: 150px;
+    }
+    img.post-image {
+    width: 100%;
+    height: auto;
+}
+    
+  </style>
+<div class="single-page">
+  <div class="App-header">
+      <div id="background-parallax">
+        <div class="background-colours">
+          <div class="background"></div>
+        </div>
+      </div>
+    <div class="mid-box-background">
+      <div class="title-wrapper">
+        <h1 id="single-title" class="animated bounceInDown"><%= posts[i].title %></h1>
+        <h2>
+          <span class="date"><%= posts[i].date %></span>
+        </h2>
+      </div>
+    </div>
+  </div>
+  <div class="App-content">
+    <div class="ui container">
+    <div class="post-content-wrap ui grid">
+      <div class="post-content-sidebar sixteen wide tablet five wide computer column">
+        <img src="<%= posts[i].image %>" alt="" class="post-image">
+      </div>
+      <div class="post-content-body sixteen wide tablet ten wide computer column">
+        <%- posts[i].body %>
+      </div>
+    </div>
+  </div>
+  </div>
+  <% } %>
+  <% } else{ %>
+  <div class="App-header">
+    <div class="mid-box-background">
+      <div class="title-wrapper">
+        <h1 id="single-title" class="animated bounceInDown">
+          Sorry, that post doesn't exist
+        </h1>
+        <div class="header-button-wrap">
+          <a class="ui button white basic inverted" href="https://nicholasgriffin.dev">
+            Go back to the homepage
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>
+</div>
+
+<% include ./partials/nm_footer.ejs %>
