@@ -46,7 +46,7 @@ router.post('/removepost', auth.required, (req, res) => {
 });
 
 //POST new user route (optional, everyone has access)
-router.post('/', auth.optional, (req, res, next) => {
+router.post('/', auth.required, (req, res, next) => {
   const { body: { user } } = req;
 
   if (!user.email) {
@@ -74,7 +74,7 @@ router.post('/', auth.optional, (req, res, next) => {
 });
 
 //POST login route (optional, everyone has access)
-router.post('/login', auth.optional, (req, res, next) => {
+router.post('/login', auth.required, (req, res, next) => {
   const { body: { user } } = req;
 
   if (!user.email) {

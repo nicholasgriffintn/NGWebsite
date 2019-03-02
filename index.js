@@ -67,6 +67,10 @@ app.get("/post-single", (req, res) => {
        res.render('post-single', { posts: posts})
     }).sort({date: 'descending'});
 });
+// Blog
+app.get("/technutty", (req, res) => {
+    res.render('technutty');
+});
 
 // router
 app.use(require('./routes'));
