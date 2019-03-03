@@ -6,6 +6,7 @@ require('mongoose-type-html');
 const errorHandler = require('errorhandler');
 var express = require('express');
 var path = require('path');
+var compression = require('compression')
 
 //Configure mongoose's promise to global promise
 mongoose.promise = global.Promise;
@@ -20,6 +21,7 @@ const app = express();
 app.set('trust proxy', true);
 app.use(cors());
 app.use(require('morgan')('dev'));
+app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -41,14 +43,12 @@ const Post = mongoose.model('Post');
 // config
 require('./config/passport');
 
-// To serve static assets in root dir
-app.use(express.static(__dirname + '/srv'));
-// To serve static assets in root dir
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
 
 // Routes
+app.use(express.static(__dirname + '/srv'));
 // Index
 app.get("/", (req, res) => {
     Post.find({}, (err, posts) => {

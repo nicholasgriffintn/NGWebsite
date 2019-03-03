@@ -1,4 +1,3 @@
-
 </div> <!-- End App-->
 </div> <!-- End Root -->
 
@@ -6,8 +5,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.3/components/icon.min.css"
     integrity="sha256-i/WrZ2D8ZxzJCLLDAysc3dTp6ep1oU4khp0mk9ze0uI=" crossorigin="anonymous">
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"
-    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"
     integrity="sha256-dwhppIrxD8qC6lNulndZgtIm4XBU9zoMd9OUoXzIDAE=" crossorigin="anonymous"></script>
 <script src="static/js/typed.min.js" type="text/javascript"></script>
@@ -17,12 +14,6 @@
 </noscript>
 
 <script type="text/javascript">
-    // Check TN referer
-    url = new URL(window.location.href);
-
-    if (url.searchParams.get('technuttyredirect')) {
-        alert('Hey! I see that you have come for my old site TechNutty. Sorry to say but I no longer run that.');
-    };
 
     // Create cookie function
     function createCookie(name, value, days) {
@@ -87,25 +78,93 @@
         }
     });
 
-    function ScrollToElement(ele) {
-        var pageHeaderScrollHeight = "120";
+    function scrollIt(destination, duration = 200, easing = 'linear', callback) {
 
-        if (ele.length) {
-            jQuery('html,body').animate({
-                scrollTop: jQuery(ele).offset().top - pageHeaderScrollHeight
-            }, 750);
+        const easings = {
+            linear(t) {
+                return t;
+            },
+            easeInQuad(t) {
+                return t * t;
+            },
+            easeOutQuad(t) {
+                return t * (2 - t);
+            },
+            easeInOutQuad(t) {
+                return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+            },
+            easeInCubic(t) {
+                return t * t * t;
+            },
+            easeOutCubic(t) {
+                return (--t) * t * t + 1;
+            },
+            easeInOutCubic(t) {
+                return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+            },
+            easeInQuart(t) {
+                return t * t * t * t;
+            },
+            easeOutQuart(t) {
+                return 1 - (--t) * t * t * t;
+            },
+            easeInOutQuart(t) {
+                return t < 0.5 ? 8 * t * t * t * t : 1 - 8 * (--t) * t * t * t;
+            },
+            easeInQuint(t) {
+                return t * t * t * t * t;
+            },
+            easeOutQuint(t) {
+                return 1 + (--t) * t * t * t * t;
+            },
+            easeInOutQuint(t) {
+                return t < 0.5 ? 16 * t * t * t * t * t : 1 + 16 * (--t) * t * t * t * t;
+            }
+        };
+
+        const start = window.pageYOffset;
+        const startTime = 'now' in window.performance ? performance.now() : new Date().getTime();
+
+        const documentHeight = Math.max(document.body.scrollHeight, document.body.offsetHeight, document.documentElement.clientHeight, document.documentElement.scrollHeight, document.documentElement.offsetHeight);
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight || document.getElementsByTagName('body')[0].clientHeight;
+        const destinationOffset = typeof destination === 'number' ? destination : destination.offsetTop;
+        const destinationOffsetToScroll = Math.round(documentHeight - destinationOffset < windowHeight ? documentHeight - windowHeight : destinationOffset);
+
+        if ('requestAnimationFrame' in window === false) {
+            window.scroll(0, destinationOffsetToScroll);
+            if (callback) {
+                callback();
+            }
+            return;
         }
+
+        function scroll() {
+            const now = 'now' in window.performance ? performance.now() : new Date().getTime();
+            const time = Math.min(1, ((now - startTime) / duration));
+            const timeFunction = easings[easing](time);
+            window.scroll(0, Math.ceil((timeFunction * (destinationOffsetToScroll - start)) + start));
+
+            if (window.pageYOffset === destinationOffsetToScroll) {
+                if (callback) {
+                    callback();
+                }
+                return;
+            }
+
+            requestAnimationFrame(scroll);
+        }
+
+        scroll();
     }
 
-    activateAtY = 20;
-
-    $(window).scroll(function () {
-        if ($(window).scrollTop() > activateAtY) {
-            //console.log($(window).scrollTop() + ' ' + activateAtY)
-            jQuery('body').addClass('scrolled');
-        } else {
-            jQuery('body').removeClass('scrolled');
-        }
+    let scrollpos = window.scrollY;
+    const header_height = 20;
+    const add_class_on_scroll = () => document.body.classList.add("scrolled")
+    const remove_class_on_scroll = () => document.body.classList.remove("scrolled")
+    window.addEventListener('scroll', function () {
+        scrollpos = window.scrollY;
+        if (scrollpos >= header_height) { add_class_on_scroll() }
+        else { remove_class_on_scroll() }
     });
 
     var typed = new Typed("#typed", {
@@ -146,10 +205,35 @@
         });
     }
 
-    function typedDelayTimeout() {
-        jQuery('.scroll-down').fadeIn("slow", function () { });
+    function fadeOut(el) {
+        el.style.opacity = 1;
 
-        if (!$('body').hasClass('scrolled')) {
+        (function fade() {
+            if ((el.style.opacity -= .1) < 0) {
+                el.style.display = "none";
+            } else {
+                requestAnimationFrame(fade);
+            }
+        })();
+    };
+
+    function fadeIn(el, display) {
+        el.style.opacity = 0;
+        el.style.display = display || "block";
+
+        (function fade() {
+            var val = parseFloat(el.style.opacity);
+            if (!((val += .1) > 1)) {
+                el.style.opacity = val;
+                requestAnimationFrame(fade);
+            }
+        })();
+    };
+
+    function typedDelayTimeout() {
+        fadeIn(document.querySelector('.scroll-down'));
+
+        if (!document.body.classList.contains('scrolled')) {
             setTimeout(typedDelayInit, 5000);
         } else {
             setTimeout(defaultTypedDelayInit, 2500);
@@ -186,8 +270,13 @@
     }
 
     function thirdTypedDelayTimeout() {
-        if (!$('body').hasClass('scrolled')) {
-            setTimeout(ScrollToElement('.App-content'), 250);
+        if (!document.body.classList.contains('scrolled')) {
+            scrollIt(
+                document.querySelector('.App-content'),
+                300,
+                'easeOutQuad',
+                () => console.log(`Just finished scrolling to ${window.pageYOffset}px`)
+            );
             setTimeout(thirdTypedDelayInit, 300);
         } else {
             setTimeout(defaultTypedDelayInit, 0);
@@ -196,200 +285,253 @@
 
     window.addEventListener("DOMContentLoaded", function (event) {
 
-        (function ($) {
-            jQuery('#OpeningContentWrapper').append(
-                '<div id="OpeningContentSocial">' +
-                '<a target="_blank" href="https://github.com/nicholasgriffintn" rel="noopener" title="Github" class="social-icon-wrap" id="GithubLinkWrap">' +
-                '<i class="github icon"></i>' +
-                '</a>' +
-                '<a target="_blank" href="https://twitter.com/NGriffintn" rel="noopener" title="Twitter" class="social-icon-wrap" id="TwitterLinkWrap">' +
-                '<i class="twitter icon"></i>' +
-                '</a>' +
-                '<a target="_blank" href="https://www.linkedin.com/in/nicholasgriffin-gb/" rel="noopener" title="LinkedIn" class="social-icon-wrap" id="LinkedinLinkWrap">' +
-                '<i class="linkedin icon"></i>' +
-                '</a>' +
-                '</div>');
+        function getGithubRepoList() {
+            // Github Query
+            var xhrGithubRepos = new XMLHttpRequest();
 
-            function queryLastfm(reload) {
+            xhrGithubRepos.onload = function () {
+                // Process our return data
+                if (xhrGithubRepos.status >= 200 && xhrGithubRepos.status < 300) {
+                    respData = xhrGithubRepos.responseText;
+                    parsedData = JSON.parse(respData);
 
-                // Set the request URL for Last.fm
-                var lastfm_request_url =
-                    'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=NGriiffin&api_key=c91dd1f9b8fcf710e36a2a48c6c493a8&limit=10&format=json';
+                    var githubReposHTML = '';
 
-                $.ajax({
-                    method: "GET",
-                    url: lastfm_request_url,
-                    contentType: "application/json",
-                    crossDomain: true,
-                    success: function (respData) {
-                        //console.log('data', respData);
-                        getSpotifyData(respData, reload);
-                    },
-                    error: function (err) {
-                        console.error(err);
-                    }
-                });
-            }
+                    var currentRepoNumber = 0;
 
-            function getSpotifyData(data, reload) {
-                var tracks = data.recenttracks.track;
+                    parsedData.forEach(function (element) {
+                        if (currentRepoNumber < 6) {
+                            console.log(element);
+                            updatedDateToFormat = new Date(element.updated_at);
+                            updatedDateToFormatFormated = updatedDateToFormat.toString();
+                            githubReposHTML += '<div class="ui card">' +
+                                '<div class="content">' +
+                                    '<a href="' + element.html_url + '" class="header">' +
+                                        element.name +
+                                    '</a>' +
+                                    '<div class="meta">' +
+                                        '<span class="language ' + element.language + '">' +
+                                            '<span class="repo-language-color ml-0"></span>' +
+                                            element.language +
+                                        '</span>' +
+                                        /* '<span class="date">' +
+                                            'Updated on ' + updatedDateToFormatFormated +
+                                        '</span>' + */
+                                    '</div>' +
+                                    '<div class="description">' +
+                                        element.description +
+                                    '</div>' +
+                                '</div>' +
+                            '</div>';
+                        }
+                        currentRepoNumber++
+                    });
 
-                //console.log(tracks);
+                    document.getElementById('githubReposContainer').innerHTML = githubReposHTML;
 
-                customSpotifyWidgetContainer = document.getElementById('spotify-widget');
-
-                if (reload != true) {
-                    customSpotifyWidgetContainer.innerHTML = '';
-                    // refresh song list
-                    setTimeout(queryLastfm, 60000);
+                    console.log('cool, this is still working!', xhrGithubRepos);
+                } else {
+                    console.log('Something has gone wrong with the last fm thing');
                 }
 
-                var customSpotifyRight = document.createElement('div');
-                customSpotifyRight.id = 'customSpotifyRight';
-                customSpotifyRight.className = 'sixteen wide tablet sixteen wide computer column';
+                console.log('Last FM call complete');
+            };
 
-                customSpotifyWidgetContainer.appendChild(customSpotifyRight);
-
-                var customSpotifyLeft = document.createElement('div');
-                customSpotifyLeft.id = 'customSpotifyLeft';
-                customSpotifyLeft.className = 'sixteen wide tablet sixteen wide computer column';
-
-                customSpotifyWidgetContainer.appendChild(customSpotifyLeft);
-
-                $trackNumber = 0;
-
-                customSpotifyLeftElement = document.getElementById('customSpotifyLeft');
-
-                customSpotifyRightElement = document.getElementById('customSpotifyRight');
-
-                var customSpotifyLeftElementSongWrapper = document.createElement('div');
-                customSpotifyLeftElementSongWrapper.id = 'customSpotifyLeftElementSongWrapper';
-
-                customSpotifyLeftElement.appendChild(customSpotifyLeftElementSongWrapper);
-
-                tracks.forEach(function (element) {
-                    console.log(element);
+            // Set the request URL for Last.fm
+            var github_request_urls =
+                'https://api.github.com/users/nicholasgriffintn/repos?sort=updated&type=owner';
 
 
-                    if (element['@attr']) {
-                        trackNowPlaying = element['@attr'].nowplaying;
-                    } else {
-                        trackNowPlaying = false
-                    }
-                    trackAlbumName = element.album['#text'];
-                    trackArtistName = element.artist['#text'];
+                xhrGithubRepos.open('GET', github_request_urls);
+                xhrGithubRepos.send();
+        }
 
-                    trackImageSmall = element.image[0]['#text'];
-                    trackImageMedium = element.image[1]['#text'];
-                    trackImageLarge = element.image[2]['#text'];
-                    trackImageExtraLarge = element.image[3]['#text'];
+        getGithubRepoList();
 
-                    trackName = element.name;
-                    trackUrl = element.url;
+        function queryLastfm(reload) {
+            // Last FM Query
+            var xhrLastFM = new XMLHttpRequest();
 
-                    //console.log(trackNowPlaying);
+            xhrLastFM.onload = function () {
+                // Process our return data
+                if (xhrLastFM.status >= 200 && xhrLastFM.status < 300) {
+                    respData = xhrLastFM.responseText;
+                    getSpotifyData(respData, reload);
+                    console.log('cool, this is still working!', xhrLastFM);
+                } else {
+                    console.log('Something has gone wrong with the last fm thing');
+                }
 
-                    if ($trackNumber == '0') {
-                        var customSpotifyRightElementSongWrapper = document.createElement('div');
-                        customSpotifyRightElementSongWrapper.id =
-                            'customSpotifyRightElementSongWrapper';
+                console.log('Last FM call complete');
+            };
 
-                        var customSpotifyRightElementSongContainer = document.createElement(
-                            'div');
-                        customSpotifyRightElementSongContainer.id =
-                            'customSpotifyRightElementSongContainer';
-                        customSpotifyRightElementSongContainer.style.backgroundImage = 'url(' +
-                            trackImageExtraLarge + ')';
+            // Set the request URL for Last.fm
+            var lastfm_request_url =
+                'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=NGriiffin&api_key=c91dd1f9b8fcf710e36a2a48c6c493a8&limit=10&format=json';
 
-                        customSpotifyRightElementSongWrapper.appendChild(
-                            customSpotifyRightElementSongContainer);
 
-                        var customSpotifyRightElementSongOverlay = document.createElement('div');
-                        customSpotifyRightElementSongOverlay.id =
-                            'customSpotifyRightElementSongOverlay';
+            xhrLastFM.open('GET', lastfm_request_url);
+            xhrLastFM.send();
+        }
 
-                        var customSpotifyRightElementSongOverlayContent = document.createElement(
-                            'div');
-                        customSpotifyRightElementSongOverlayContent.id =
-                            'customSpotifyRightElementSongOverlayContent';
+        function getSpotifyData(data, reload) {
+            parsedData = JSON.parse(data);
+            var tracks = parsedData.recenttracks.track;
 
-                        customSpotifyRightElementSongOverlayContent.innerHTML = '<h3>' +
-                            trackName +
-                            '</h3>' +
-                            '<span>' +
-                            trackArtistName +
-                            '</span>' +
-                            '<span>' +
-                            trackAlbumName +
-                            '</span>' +
-                            '<a class="trackLinkPlay" rel="noopener nofollow" target="_blank" href="' +
-                            trackUrl +
-                            '">' +
-                            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><path d="M45.563 29.174l-22-15A1 1 0 1 0 22 15v30a.999.999 0 0 0 1.563.826l22-15a1 1 0 0 0 0-1.652zM24 43.107V16.893L43.225 30 24 43.107z"/><path d="M30 0C13.458 0 0 13.458 0 30s13.458 30 30 30 30-13.458 30-30S46.542 0 30 0zm0 58C14.561 58 2 45.439 2 30S14.561 2 30 2s28 12.561 28 28-12.561 28-28 28z"/></svg>' +
-                            '</a>';
+            //console.log(tracks);
 
-                        customSpotifyRightElementSongOverlay.appendChild(
-                            customSpotifyRightElementSongOverlayContent);
+            customSpotifyWidgetContainer = document.getElementById('spotify-widget');
 
-                        if (trackNowPlaying) {
-                            var nowPlayingOverlay = document.createElement('div');
-                            nowPlayingOverlay.id = 'nowPlayingOverlay';
-
-                            nowPlayingOverlay.innerHTML = '<span>Now Playing</span>';
-
-                            customSpotifyRightElementSongOverlay.appendChild(nowPlayingOverlay);
-                        }
-
-                        customSpotifyRightElementSongWrapper.appendChild(
-                            customSpotifyRightElementSongOverlay);
-
-                        customSpotifyRightElement.appendChild(
-                            customSpotifyRightElementSongWrapper);
-                    } else {
-                        var customSpotifyLeftElementSong = document.createElement('div');
-                        customSpotifyLeftElementSong.className = 'leftSideSong ui grid';
-
-                        var customSpotifyLeftElementSongHTML =
-                            '<a rel="noopener nofollow" target="_blank" class="trackLinkFloat" href="' +
-                            trackUrl +
-                            '"></a>' +
-                            '<div class="four wide  column">' +
-                            '<img src="' +
-                            trackImageSmall +
-                            '">' +
-                            '</div>' +
-                            '<div class="twelve wide column">' +
-                            '<h3>' +
-                            trackName +
-                            '</h3>' +
-                            '<span>' +
-                            trackArtistName +
-                            '</span>' +
-                            '<span>' +
-                            trackAlbumName +
-                            '</span>' +
-                            '</div>';
-
-                        customSpotifyLeftElementSong.innerHTML =
-                            customSpotifyLeftElementSongHTML;
-
-                        customSpotifyLeftElementSongWrapper.appendChild(
-                            customSpotifyLeftElementSong)
-                    }
-
-                    $trackNumber++;
-
-                });
-
+            if (reload != true) {
+                customSpotifyWidgetContainer.innerHTML = '';
+                // refresh song list
+                setTimeout(queryLastfm, 60000);
             }
 
-            // refresh song list
-            setTimeout(queryLastfm, 60000);
+            var customSpotifyRight = document.createElement('div');
+            customSpotifyRight.id = 'customSpotifyRight';
+            customSpotifyRight.className = 'sixteen wide tablet sixteen wide computer column';
 
-            // Get song list on load
-            queryLastfm(true);
+            customSpotifyWidgetContainer.appendChild(customSpotifyRight);
 
-        })(jQuery);
+            var customSpotifyLeft = document.createElement('div');
+            customSpotifyLeft.id = 'customSpotifyLeft';
+            customSpotifyLeft.className = 'sixteen wide tablet sixteen wide computer column';
+
+            customSpotifyWidgetContainer.appendChild(customSpotifyLeft);
+
+            $trackNumber = 0;
+
+            customSpotifyLeftElement = document.getElementById('customSpotifyLeft');
+
+            customSpotifyRightElement = document.getElementById('customSpotifyRight');
+
+            var customSpotifyLeftElementSongWrapper = document.createElement('div');
+            customSpotifyLeftElementSongWrapper.id = 'customSpotifyLeftElementSongWrapper';
+
+            customSpotifyLeftElement.appendChild(customSpotifyLeftElementSongWrapper);
+
+            tracks.forEach(function (element) {
+                console.log(element);
+
+
+                if (element['@attr']) {
+                    trackNowPlaying = element['@attr'].nowplaying;
+                } else {
+                    trackNowPlaying = false
+                }
+                trackAlbumName = element.album['#text'];
+                trackArtistName = element.artist['#text'];
+
+                trackImageSmall = element.image[0]['#text'];
+                trackImageMedium = element.image[1]['#text'];
+                trackImageLarge = element.image[2]['#text'];
+                trackImageExtraLarge = element.image[3]['#text'];
+
+                trackName = element.name;
+                trackUrl = element.url;
+
+                //console.log(trackNowPlaying);
+
+                if ($trackNumber == '0') {
+                    var customSpotifyRightElementSongWrapper = document.createElement('div');
+                    customSpotifyRightElementSongWrapper.id =
+                        'customSpotifyRightElementSongWrapper';
+
+                    var customSpotifyRightElementSongContainer = document.createElement(
+                        'div');
+                    customSpotifyRightElementSongContainer.id =
+                        'customSpotifyRightElementSongContainer';
+                    customSpotifyRightElementSongContainer.style.backgroundImage = 'url(' +
+                        trackImageExtraLarge + ')';
+
+                    customSpotifyRightElementSongWrapper.appendChild(
+                        customSpotifyRightElementSongContainer);
+
+                    var customSpotifyRightElementSongOverlay = document.createElement('div');
+                    customSpotifyRightElementSongOverlay.id =
+                        'customSpotifyRightElementSongOverlay';
+
+                    var customSpotifyRightElementSongOverlayContent = document.createElement(
+                        'div');
+                    customSpotifyRightElementSongOverlayContent.id =
+                        'customSpotifyRightElementSongOverlayContent';
+
+                    customSpotifyRightElementSongOverlayContent.innerHTML = '<h3>' +
+                        trackName +
+                        '</h3>' +
+                        '<span>' +
+                        trackArtistName +
+                        '</span>' +
+                        '<span>' +
+                        trackAlbumName +
+                        '</span>' +
+                        '<a class="trackLinkPlay" rel="noopener nofollow" target="_blank" href="' +
+                        trackUrl +
+                        '">' +
+                        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60"><path d="M45.563 29.174l-22-15A1 1 0 1 0 22 15v30a.999.999 0 0 0 1.563.826l22-15a1 1 0 0 0 0-1.652zM24 43.107V16.893L43.225 30 24 43.107z"/><path d="M30 0C13.458 0 0 13.458 0 30s13.458 30 30 30 30-13.458 30-30S46.542 0 30 0zm0 58C14.561 58 2 45.439 2 30S14.561 2 30 2s28 12.561 28 28-12.561 28-28 28z"/></svg>' +
+                        '</a>';
+
+                    customSpotifyRightElementSongOverlay.appendChild(
+                        customSpotifyRightElementSongOverlayContent);
+
+                    if (trackNowPlaying) {
+                        var nowPlayingOverlay = document.createElement('div');
+                        nowPlayingOverlay.id = 'nowPlayingOverlay';
+
+                        nowPlayingOverlay.innerHTML = '<span>Now Playing</span>';
+
+                        customSpotifyRightElementSongOverlay.appendChild(nowPlayingOverlay);
+                    }
+
+                    customSpotifyRightElementSongWrapper.appendChild(
+                        customSpotifyRightElementSongOverlay);
+
+                    customSpotifyRightElement.appendChild(
+                        customSpotifyRightElementSongWrapper);
+                } else {
+                    var customSpotifyLeftElementSong = document.createElement('div');
+                    customSpotifyLeftElementSong.className = 'leftSideSong ui grid';
+
+                    var customSpotifyLeftElementSongHTML =
+                        '<a rel="noopener nofollow" target="_blank" class="trackLinkFloat" href="' +
+                        trackUrl +
+                        '"></a>' +
+                        '<div class="four wide  column">' +
+                        '<img src="' +
+                        trackImageSmall +
+                        '">' +
+                        '</div>' +
+                        '<div class="twelve wide column">' +
+                        '<h3>' +
+                        trackName +
+                        '</h3>' +
+                        '<span>' +
+                        trackArtistName +
+                        '</span>' +
+                        '<span>' +
+                        trackAlbumName +
+                        '</span>' +
+                        '</div>';
+
+                    customSpotifyLeftElementSong.innerHTML =
+                        customSpotifyLeftElementSongHTML;
+
+                    customSpotifyLeftElementSongWrapper.appendChild(
+                        customSpotifyLeftElementSong)
+                }
+
+                $trackNumber++;
+
+            });
+
+        }
+
+        // refresh song list
+        setTimeout(queryLastfm, 60000);
+
+        // Get song list on load
+        queryLastfm(true);
     });
 </script>
 

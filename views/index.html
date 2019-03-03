@@ -94,6 +94,17 @@
           and somehow managed to achieve a 2:1, which is fair enough. 😂</p>
         <p>I aim to use this website to not only showcase myself but also start working on a range of other personal
           projects. You can follow my expeditions below.</p>
+          <div id="OpeningContentSocial">
+              <a target="_blank" href="https://github.com/nicholasgriffintn" rel="noopener" title="Github" class="social-icon-wrap" id="GithubLinkWrap">
+              <i class="github icon"></i>
+              </a>
+              <a target="_blank" href="https://twitter.com/NGriffintn" rel="noopener" title="Twitter" class="social-icon-wrap" id="TwitterLinkWrap">
+              <i class="twitter icon"></i>
+              </a>
+              <a target="_blank" href="https://www.linkedin.com/in/nicholasgriffin-gb/" rel="noopener" title="LinkedIn" class="social-icon-wrap" id="LinkedinLinkWrap">
+              <i class="linkedin icon"></i>
+              </a>
+              </div>
       </div>
     </div>
     <div id="MusicOpeningWrapper" class="sixteen wide tablet four wide computer column">
@@ -108,7 +119,7 @@
       <div id="BlogPostOpenerWrapper">
         <h2>What's going on?</h2>
         <p>Below you will find some of the blog posts that I have wrote (if that is still working), I used to write a
-          lot and I'm looking to write blog posts more about the projects that I am working on. There might also be a 
+          lot and I'm looking to write blog posts more about the projects that I am working on. There might not be a 
           lot here but I hope that it will at least be interesting, at least to me.</p>
       </div>
     </div>
@@ -123,7 +134,7 @@
                 <img src="<%= posts[i].image %>">
               </div>
               <div class="content">
-                <a class="header"><%= posts[i].title %></a>
+                <a href="/post-single?postID=<%= posts[i]._id %>" class="header"><%= posts[i].title %></a>
                 <div class="meta">
                   <span class="date"><%= posts[i].date %></span>
                 </div>
@@ -148,7 +159,9 @@
   <div id="ExtraContentWrapper" class="ui container">
     <div id="ExtraContentContainer">
       <h2>So what is it that you do?</h2>
-      <small>I'm not sure that I actually know...</small>
+      <small>I'm not sure that I actually know but here's some of my public Github stuff:</small>
+      <div class="ui three stackable cards" id="githubReposContainer">
+      </div>
     </div>
     <div id="SkillsContentContainer">
       <h3>Languages that I often write in</h3>
