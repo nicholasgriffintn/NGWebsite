@@ -1,0 +1,19 @@
+<% include ./partials/head.ejs %>
+
+<% include ./partials/header.ejs %>
+
+  <div class="App-header">
+    <div class="mid-box-background">
+      <div class="title-wrapper">
+        <h1 id="single-title" class="animated bounceInDown">
+          Image Uploader
+        </h1>
+        <form method="post" action="api/upload/post" enctype="multipart/form-data">
+          <input type="file" name="image" /><br /><br />
+          <button type="submit" name="upload">Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<% include ./partials/nm_footer.ejs %>

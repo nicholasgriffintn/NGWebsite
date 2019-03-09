@@ -7,6 +7,7 @@ const errorHandler = require('errorhandler');
 var express = require('express');
 var path = require('path');
 var compression = require('compression')
+const passport = require('passport');
 
 //Configure mongoose's promise to global promise
 mongoose.promise = global.Promise;
@@ -25,7 +26,10 @@ app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ secret: 'passport-tutorial', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
+app.use(session({ secret: 'sahshhaahsahhsshahasy473ggdsh', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+
 
 if (!isProduction) {
     app.use(errorHandler());
@@ -52,24 +56,38 @@ app.use(express.static(__dirname + '/srv'));
 // Index
 app.get("/", (req, res) => {
     Post.find({}, (err, posts) => {
-       res.render('index', { posts: posts})
-    }).sort({date: 'descending'}).limit(3);
+        res.render('index', { title: 'Nicholas Griffin - Web Developer, Blogger and Technology Enthusiast', posts: posts })
+    }).sort({ date: 'descending' }).limit(3);
 });
 // Blog
 app.get("/blog", (req, res) => {
     Post.find({}, (err, posts) => {
-       res.render('index', { posts: posts})
-    }).sort({date: 'descending'});
+        res.render('index', { title: 'Blog | Nicholas Griffin', posts: posts })
+    }).sort({ date: 'descending' });
 });
 // Single Page
 app.get("/post-single", (req, res) => {
     Post.find({ '_id': req.query.postID }, (err, posts) => {
-       res.render('post-single', { posts: posts})
-    }).sort({date: 'descending'});
+        let postTitle;
+        if (posts) {
+            postTitle = posts[0].title
+        } else {
+            postTitle = 'Undefined'
+        }
+        res.render('post-single', { title: postTitle + ' | Nicholas Griffin', posts: posts })
+    }).sort({ date: 'descending' });
 });
-// Blog
+// TechNutty
 app.get("/technutty", (req, res) => {
-    res.render('technutty');
+    res.render('technutty', { title: 'TechNutty | Nicholas Griffin' });
+});
+// Shite
+app.get("/shite", (req, res) => {
+    res.render('shite', { title: 'Shite | Nicholas Griffin' });
+});
+// Login Page
+app.get("/login", (req, res) => {
+    res.render('login', { title: 'Login | Nicholas Griffin' });
 });
 
 // router
@@ -92,8 +110,8 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.json({
-      message: err.message,
-      error: err
+        message: err.message,
+        error: err
     });
 });
 
