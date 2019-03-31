@@ -1,14 +1,25 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const bcrypt   = require('bcrypt-nodejs');
 
 const { Schema } = mongoose;
 
 const UsersSchema = new Schema({
   email: String,
+  password: String,
   hash: String,
   salt: String,
 });
+
+UsersSchema.methods.generateHash = function(password) {
+  return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+// checking if password is valid
+UsersSchema.methods.validPassword = function(password) {
+  return bcrypt.compareSync(password, this.password);
+};
 
 UsersSchema.methods.setPassword = function(password) {
   this.salt = crypto.randomBytes(16).toString('hex');

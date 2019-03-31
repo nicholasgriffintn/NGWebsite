@@ -2,24 +2,133 @@
 
 <% include ./partials/header.ejs %>
 
+<style>
+    #login {
+        max-width: 560px;
+        width: 100%;
+        margin: auto;
+        background: rgba(76, 76, 76, 0.9);
+        color: #fff;
+        box-shadow: 0 4px 10px 4px rgba(19, 35, 47, 0.3);
+        padding: 40px;
+        border-radius: 4px;
+    }
+    
+    #login h1 {
+        margin: 0;
+        font-weight: 300;
+        font-size: 2em !important;
+        margin-bottom: 20px;
+    }
+    
+    #login .field-wrap {
+        margin-bottom: 20px;
+        position: relative;
+        width: 100%;
+        display: block;
+    }
+    
+    #login .field-wrap label {
+        left: 10px;
+        position: absolute;
+        transform: translateY(6px);
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.25s ease;
+        font-size: 22px;
+        pointer-events: none;
+        width: 100%;
+        top: 0;
+        text-align: left;
+    }
+    
+    #login .field-wrap label .req {
+        color: #093054;
+        margin: 2px;
+    }
+    
+    .button {
+      background: #093054;
+    }
+    
+    #login .field-wrap input {
+        font-size: 22px;
+        display: block;
+        width: calc(100% - 20px);
+        height: 100%;
+        padding: 5px 10px;
+        background: none;
+        background-image: none;
+        border: 1px solid #a0b3b0;
+        color: #fff;
+        border-radius: 0;
+        transition: border-color .25s ease, box-shadow .25s ease;
+    }
+    </style>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    
+    <script>
+    jQuery('#login').find('input, textarea').on('keyup blur focus', function (e) {
+      
+      var $this = $(this),
+          label = $this.prev('label');
+    
+        if (e.type === 'keyup') {
+          if ($this.val() === '') {
+              label.removeClass('active highlight');
+            } else {
+              label.addClass('active highlight');
+            }
+        } else if (e.type === 'blur') {
+          if( $this.val() === '' ) {
+            label.removeClass('active highlight'); 
+          } else {
+            label.removeClass('highlight');   
+          }   
+        } else if (e.type === 'focus') {
+          
+          if( $this.val() === '' ) {
+            label.removeClass('highlight'); 
+          } 
+          else if( $this.val() !== '' ) {
+            label.addClass('highlight');
+          }
+        }
+    
+    });
+    </script>
+    
 <div class="App-header full-height-header">
   <div class="mid-box-background">
     <div class="title-wrapper">
-      <h1 id="single-title" class="animated bounceInDown">
-        Log into the dashboard
-      </h1>
-      <form action="/api/users/login" method="post">
-        <div class="form-group">
-            <label>Email</label>
-            <input type="text" class="form-control" name="user[email]">
-        </div>
-        <div class="form-group">
-            <label>Password</label>
-            <input type="password" class="form-control" name="user[password]">
-        </div>
+      <div id="login">
+        <h1>Welcome Back!</h1>
 
-        <button type="submit" class="btn btn-warning btn-lg">Login</button>
-    </form>
+        <% if (message.length > 0) { %>
+        <div class="alert alert-danger"><%= message %></div>
+        <% } %>
+
+        <form action="/api/users/login" method="post">
+
+          <div class="field-wrap">
+            <label>
+              Email Address<span class="req">*</span>
+            </label>
+            <input type="email" name="email" required autocomplete="off" />
+          </div>
+
+          <div class="field-wrap">
+            <label>
+              Password<span class="req">*</span>
+            </label>
+            <input type="password" name="password" required autocomplete="off" />
+          </div>
+
+          <button class="button button-block" />Log In</button>
+
+        </form>
+
+      </div>
     </div>
   </div>
 </div>

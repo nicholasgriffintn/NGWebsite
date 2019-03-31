@@ -9,21 +9,17 @@ const router = express.Router();
 const upload = require('../../helpers/upload');
 const Resize = require('../../helpers/resize');
 
-//GET current route (required, only authenticated users have access)
-router.get('/uploader', auth.required, (req, res, next) => {
-  const { payload: { id } } = req;
+function isLoggedIn(req, res, next) {
 
-  return Users.findById(id)
-    .then((user) => {
-      if (!user) {
-        return res.sendStatus(400);
-      }
+  // if user is authenticated in the session, carry on 
+  if (req.isAuthenticated())
+      return next();
 
-      return res.render('uploader', { title: 'Upload Image'});
-    });
-});
+  // if they aren't redirect them to the home page
+  res.redirect('/');
+}
 
-router.post('/post', auth.required, upload.single('image'), async function (req, res) {
+router.post('/post', isLoggedIn, upload.single('image'), async function (req, res) {
     const imagePath = path.join(__dirname, '../../srv/uploads/images');
     const fileUpload = new Resize(imagePath);
     if (!req.file) {

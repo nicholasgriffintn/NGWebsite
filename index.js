@@ -1,13 +1,23 @@
+//Initiate our app
+var express = require('express');
+const app = express();
+const port     = process.env.PORT || 8080;
+const passport = require('passport');
+const mongoose = require('mongoose');
+const flash    = require('connect-flash');
+
+const morgan    = require('morgan');
+var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+
 const cors = require('cors');
-const mongoose = require('mongoose');
 require('mongoose-type-html');
 const errorHandler = require('errorhandler');
-var express = require('express');
-var path = require('path');
-var compression = require('compression')
-const passport = require('passport');
+const path = require('path');
+const compression = require('compression');
+
+const configDB = require('./config/database.js');
 
 //Configure mongoose's promise to global promise
 mongoose.promise = global.Promise;
@@ -15,13 +25,11 @@ mongoose.promise = global.Promise;
 //Configure isProduction variable
 const isProduction = process.env.NODE_ENV === 'production';
 
-//Initiate our app
-const app = express();
-
 //Configure our app
 app.set('trust proxy', true);
 app.use(cors());
 app.use(require('morgan')('dev'));
+app.use(cookieParser());
 app.use(compression());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -29,14 +37,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'sahshhaahsahhsshahasy473ggdsh', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
 app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
-
+app.use(flash()); // use connect-flash for flash messages stored in session
 
 if (!isProduction) {
     app.use(errorHandler());
 }
 
 //Configure Mongoose
-mongoose.connect('mongodb+srv://test:ojs1S5FRbzAjI51K@cluster0-tnibq.mongodb.net/test?retryWrites=true');
+mongoose.connect(configDB.url, { useNewUrlParser: true });
 mongoose.set('debug', true);
 
 // modelss
@@ -44,53 +52,16 @@ require('./models/Users');
 require('./models/Post');
 const Post = mongoose.model('Post');
 
-// config
-require('./config/passport');
-
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
 
+// config
+require('./config/passport');
+
 // Routes
 app.use(express.static(__dirname + '/srv'));
-// Index
-app.get("/", (req, res) => {
-    Post.find({}, (err, posts) => {
-        res.render('index', { title: 'Nicholas Griffin - Web Developer, Blogger and Technology Enthusiast', posts: posts })
-    }).sort({ date: 'descending' }).limit(3);
-});
-// Blog
-app.get("/blog", (req, res) => {
-    Post.find({}, (err, posts) => {
-        res.render('index', { title: 'Blog | Nicholas Griffin', posts: posts })
-    }).sort({ date: 'descending' });
-});
-// Single Page
-app.get("/post-single", (req, res) => {
-    Post.find({ '_id': req.query.postID }, (err, posts) => {
-        let postTitle;
-        if (posts) {
-            postTitle = posts[0].title
-        } else {
-            postTitle = 'Undefined'
-        }
-        res.render('post-single', { title: postTitle + ' | Nicholas Griffin', posts: posts })
-    }).sort({ date: 'descending' });
-});
-// TechNutty
-app.get("/technutty", (req, res) => {
-    res.render('technutty', { title: 'TechNutty | Nicholas Griffin' });
-});
-// Shite
-app.get("/shite", (req, res) => {
-    res.render('shite', { title: 'Shite | Nicholas Griffin' });
-});
-// Login Page
-app.get("/login", (req, res) => {
-    res.render('login', { title: 'Login | Nicholas Griffin' });
-});
 
-// router
 app.use(require('./routes'));
 
 // To allow cross origin request
@@ -115,4 +86,5 @@ app.use(function (err, req, res, next) {
     });
 });
 
-app.listen(8000);
+app.listen(port);
+console.log('The website is now live on the port: ' + port);

@@ -1,0 +1,31 @@
+<% include ./partials/head.ejs %>
+
+<% include ./partials/header.ejs %>
+
+<div class="App-header full-height-header">
+  <div class="mid-box-background">
+    <div class="title-wrapper">
+      <h1 id="single-title" class="animated bounceInDown">
+        Profile
+        <a href="/admin/auth/logout" class="btn btn-default btn-sm">Logout</a>
+      </h1>
+      
+      <!-- LOCAL INFORMATION -->
+      <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-user"></span> Local</h3>
+
+                    <p>
+                        <strong>id</strong>: <%= user._id %><br>
+                        <strong>email</strong>: <%= user.email %><br>
+                        <strong>password</strong>: <%= user.password %>
+                    </p>
+
+            </div>
+        </div>
+
+    </div>
+  </div>
+</div>
+
+<% include ./partials/nm_footer.ejs %>
