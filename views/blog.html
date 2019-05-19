@@ -1,0 +1,64 @@
+<% include ./partials/head.ejs %>
+<style>
+    .single-page .App-header {
+      height: auto !important;
+      padding-top: 0 !important;
+      position: relative;
+  }
+    .single-page .App-content {
+      top: 0 !important;
+      padding: 1rem;
+      text-align: left;
+      min-height: 150px;
+      width: calc(100% - 2rem);
+  }
+  img.post-image {
+  width: 100%;
+  height: auto;
+}
+.post-content-wrap {
+max-width: 780px;
+width: 100%;
+margin: auto;
+}
+  
+</style>
+<div class="single-page">
+    <div class="App-header">
+  <div id="BlogListWrapper" class="container-fluid">
+    <div class="ui container">
+      <h1>My Blog</h1>
+      <div class="ui three stackable cards" id="BlogContentContainer">
+        <% if(posts){ %>
+          <% for(let i = 0; i < posts.length; i++) { %>
+            <div class="ui card">
+              <div class="image">
+                <img src="<%= posts[i].image %>">
+              </div>
+              <div class="content">
+                <a href="/post-single?postID=<%= posts[i]._id %>" class="header"><%= posts[i].title %></a>
+                <div class="meta">
+                  <span class="date"><%= posts[i].date %></span>
+                </div>
+                <div class="description">
+                  <%= posts[i].excerpt %>
+                </div>
+              </div>
+              <div class="extra content">
+                <a class="ui button primary basic inverted" href="/post-single?postID=<%= posts[i]._id %>">
+                  Read more
+                </a>
+              </div>
+            </div>
+          <% } %>
+        <% } %>
+      </div>
+      <button id="blogLoadMoreButton" style="display:none" class="ui button fluid" data-start="0" data-limit="3">
+        Load More
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+
+<% include ./partials/nm_footer.ejs %>

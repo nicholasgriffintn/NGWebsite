@@ -17,4 +17,14 @@ router.get('/upload', isLoggedIn, (req, res, next) => {
   return res.render('uploader', { title: 'Upload Image'});
 });
 
+//GET current route (required, only authenticated users have access)
+router.get('/addpost', isLoggedIn, (req, res, next) => {
+  return res.render('addpost', { title: 'Add a new post'});
+});
+
+//GET current route (required, only authenticated users have access)
+router.get('/removepost', isLoggedIn, (req, res, next) => {
+  return res.render('removepost', { title: 'Remove a post'});
+});
+
 module.exports = router;

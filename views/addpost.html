@@ -1,0 +1,23 @@
+<% include ./partials/head.ejs %>
+
+<% include ./partials/header.ejs %>
+
+  <div class="App-header">
+    <div class="mid-box-background">
+      <div class="title-wrapper">
+        <h1 id="single-title" class="animated bounceInDown">
+          Add a Post
+        </h1>
+        <form action="/api/posts/addpost" method="post">
+          <input type="text" name="title" />
+          <input type="text" name="date" />
+          <input type="text" name="image" />
+          <input type="text" name="excerpt" />
+          <input type="text" name="content" />
+          <button type="submit">Post this</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<% include ./partials/nm_footer.ejs %>
