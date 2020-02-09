@@ -1,5 +1,7 @@
 ## Simple Web Service
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/nicholasgriffintn/NGWebsite.svg?token=3b60e179c6ef60e49dfab111c324631b782cff64053839e8cc8e6df25f389c92&ts=1581260746124)](https://greenkeeper.io/)
+
 ### Setup
 
 Copy the index file in this folder to the project root:
